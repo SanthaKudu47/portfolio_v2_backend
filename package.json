@@ -1,0 +1,27 @@
+{
+  "name": "portfolio_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SanthaKudu47/portfolio_v2_backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SanthaKudu47/portfolio_v2_backend/issues"
+  },
+  "homepage": "https://github.com/SanthaKudu47/portfolio_v2_backend#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
+}
