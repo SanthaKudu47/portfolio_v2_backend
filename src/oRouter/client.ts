@@ -35,7 +35,7 @@ export async function sendMessage(message: string) {
   const client = createClient();
   try {
     const result = client.callModel({
-      model: "z-ai/glm-4.5-air:free",//"google/gemma-4-31b-it:free",//"qwen/qwen3-next-80b-a3b-instruct:free",//"poolside/laguna-m.1:free",
+      model: "",//"z-ai/glm-4.5-air:free",//"google/gemma-4-31b-it:free",//"qwen/qwen3-next-80b-a3b-instruct:free",//"poolside/laguna-m.1:free",
       input: message,
     });
     const reply = await result.getText();
