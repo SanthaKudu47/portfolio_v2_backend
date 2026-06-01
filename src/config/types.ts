@@ -2,6 +2,7 @@ export interface IAppConfig {
   githubToken: string | null;
   githubUser: string | null;
   openRouterKey: string | null;
+  groqKey: string | null;
   [key: string]: string | null;
 }
 

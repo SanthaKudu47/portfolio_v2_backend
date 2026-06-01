@@ -1,4 +1,6 @@
 import { OpenRouter } from "@openrouter/agent";
+import { OpenRouter as SDK } from "@openrouter/sdk";
+import { appConfig } from "../config/config.ts";
 
 declare global {
   var openRouterClient: OpenRouter | null;
@@ -11,7 +13,7 @@ function createClient() {
     return globalThis.openRouterClient as OpenRouter;
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = appConfig.openRouterKey;
   if (!apiKey) {
     console.log(
       " Error: OPENROUTER_API_KEY is not found in environment variables.",
@@ -31,11 +33,19 @@ function createClient() {
   }
 }
 
+export async function keyStatus() {
+  const openRouter = new SDK({
+    apiKey: appConfig.openRouterKey ?? "",
+  });
+  const keyInfo = await openRouter.apiKeys.getCurrentKeyMetadata();
+  console.log(keyInfo);
+}
+
 export async function sendMessage(message: string) {
   const client = createClient();
   try {
     const result = client.callModel({
-      model: "",//"z-ai/glm-4.5-air:free",//"google/gemma-4-31b-it:free",//"qwen/qwen3-next-80b-a3b-instruct:free",//"poolside/laguna-m.1:free",
+      model: "z-ai/glm-4.5-air:free", //"z-ai/glm-4.5-air:free",//"google/gemma-4-31b-it:free",//"qwen/qwen3-next-80b-a3b-instruct:free",//"poolside/laguna-m.1:free",
       input: message,
     });
     const reply = await result.getText();
@@ -45,5 +55,3 @@ export async function sendMessage(message: string) {
     throw new Error("Failed to call model");
   }
 }
-
-

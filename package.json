@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "dev": "node --env-file=.env --watch src/app.ts"
+    "dev": "node --env-file=.env --watch src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
   "dependencies": {
     "@openrouter/agent": "^0.7.0",
     "@openrouter/sdk": "^0.12.35",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "groq-sdk": "^1.2.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6"
