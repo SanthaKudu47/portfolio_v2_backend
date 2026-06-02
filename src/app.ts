@@ -1,5 +1,5 @@
 import express from "express";
-import { keyStatus, sendMessage } from "./oRouter/client.ts";
+import { keyStatus } from "./oRouter/client.ts";
 import { errorHandler } from "./errorHandler/errorHandler.ts";
 import { appConfig, initialize } from "./config/config.ts";
 import {
@@ -11,19 +11,24 @@ import {
 } from "./github/github.ts";
 import { buildTree } from "./helper/helper.ts";
 import type { ITree } from "./config/types.ts";
-import { chat, setupGroq } from "./groq/client.ts";
+import { chat} from "./groq/client.ts";
+import { headerValidator } from "./middleware/headerValidator.ts";
+import type { RequestWithContext } from "./types/appTypes.ts";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+
+app.use(headerValidator);
 app.use(errorHandler);
 
 console.log(process.env.OPENROUTER_API_KEY);
 
-app.post("/chats", async function (req, res) {
+app.post("/chats", async function (request, res) {
+  const req = request as RequestWithContext;
   const { message } = req.body;
-  const reply = await chat(message);
+  const reply = await chat(message,req.sessionId);
   res.json(reply);
 });
 
@@ -152,7 +157,6 @@ app.get("/file", async function (req, res) {
 });
 
 initialize();
-setupGroq();
 app.listen(PORT, function (err: any) {
   if (err) {
     console.log("Failed to start Server");

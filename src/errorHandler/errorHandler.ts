@@ -8,7 +8,7 @@ export function errorHandler(
 ) {
   const errorMessage = err instanceof Error ? err.message : String(err);
   if (
-    errorMessage == "OPENROUTER_API_KEY is not found in environment variables."
+    errorMessage === "OPENROUTER_API_KEY is not found in environment variables."
   ) {
     res.status(500).json({
       success: false,
@@ -19,11 +19,20 @@ export function errorHandler(
     return;
   }
 
-  if (errorMessage == "Failed to call model") {
+  if (errorMessage === "Failed to call model") {
     res.status(500).json({
       success: false,
       message:
         "The AI service is currently unavailable or busy. Please try again shortly.",
+      error: errorMessage,
+    });
+    return;
+  }
+
+  if (errorMessage === "Invalid request.") {
+    return res.status(500).json({
+      success: false,
+      message: "insufficient header information",
       error: errorMessage,
     });
   }

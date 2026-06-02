@@ -1,7 +1,6 @@
 import Groq from "groq-sdk";
 import { appConfig } from "../config/config.ts";
-import type { IMessage } from "../context/types.ts";
-import { context } from "../context/context.ts";
+import { contextManager } from "../context/context.ts";
 
 declare global {
   var groqClient: Groq | null;
@@ -28,43 +27,41 @@ function createClient() {
   }
 }
 
-function initializeContext(context: IMessage[]) {
-  context.push({
-    role: "system",
-    content: "Your a helpful assistant named 'LASANTHA'",
+export async function chat(message: string, userSessionId: string) {
+  const groq = createClient();
+
+  const userSessionContext = contextManager.getSessionContext(userSessionId);
+  if (!userSessionContext) {
+    throw new Error("No active session context found.");
+  }
+
+  contextManager.addMessageToSessionContext(userSessionId, {
+    role: "user",
+    content: message,
   });
-}
 
-function updateContext(context: IMessage[], message: IMessage) {
-  context.push(message);
-}
-
-export async function setupGroq() {
-  initializeContext(context);
-}
-
-export async function chat(message: string) {
-  const grock = createClient();
-  updateContext(context, { role: "user", content: message }); //context hidden dependency
   try {
-    const response = await grock.chat.completions.create({
-      messages: context,
+    const response = await groq.chat.completions.create({
+      messages: userSessionContext,
       model: "llama-3.1-8b-instant",
     });
-    if (response.choices.length === 0) {
-      console.log("No choices in response object");
-      return null;
-    }
-    const { role, content } = response.choices[0].message;
-    //tools are later
-    // if(role ==='assistant'){
 
-    // }
-    updateContext(context, { role: role, content: content });
-    return content;
+    if (response.choices.length === 0) {
+      console.error("Groq returned no choices.");
+      return "I'm having trouble responding right now.";
+    }
+
+    const { role, content } = response.choices[0].message;
+    // keep these destructured variables for future use, when handling tools
+    // 4. Add assistant message to context
+    contextManager.addMessageToSessionContext(userSessionId, {
+      role: role,
+      content: content,
+    });
+    contextManager.trimContext(userSessionId);
+    return content ?? "I'm having trouble responding right now.";
   } catch (error) {
-    console.log("Failed to call model");
-    console.log(error);
-    return null;
+    console.error("Groq chat error:", error);
+    throw new Error("Unable to communicate with the AI model.");
   }
 }
