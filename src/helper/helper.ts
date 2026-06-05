@@ -1,5 +1,6 @@
 import type { Response } from "express";
 import type { GitHubRepo, IDir, ITree, SimplifiedRepo } from "../config/types";
+import { createHmac, timingSafeEqual } from "crypto";
 
 async function readWebStreamToText(
   stream: ReadableStream<Uint8Array>,
@@ -122,4 +123,27 @@ export function sendResponse(
   });
 }
 
-function validateInputs(data: string) {}
+export function signToken(key: string, value: string) {
+  if (!key) {
+    console.log("Key required!");
+    throw new Error("Failed to find secretKey");
+  }
+  const signedToken = createHmac("sha256", key).update(value).digest("hex");
+  console.log(signedToken);
+  return signedToken;
+}
+
+function verifyToken(token: string, key: string) {
+  const [sessionId, signature] = token.split(".");
+
+  const expectedToken = signToken(key, sessionId);
+
+  if (signature.length !== expectedToken.length) return false;
+
+  const isValid = timingSafeEqual(
+    Buffer.from(signature, "hex"),
+    Buffer.from(expectedToken, "hex"),
+  );
+
+  return isValid;
+}

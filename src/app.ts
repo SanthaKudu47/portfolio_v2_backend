@@ -9,22 +9,43 @@ import {
   getFileTree,
   getFile,
 } from "./github/github.ts";
-import { buildTree, sendResponse } from "./helper/helper.ts";
+import { buildTree, sendResponse, signToken } from "./helper/helper.ts";
 import { headerValidator } from "./middleware/headerValidator.ts";
 import type { RequestWithContext } from "./types/appTypes.ts";
 import { toolManager } from "./tools/tools.ts";
 import { chat } from "./groq/client.ts";
-import { UserMessageSchema } from "./validation/validationSchema.ts";
+import {
+  SessionInitSchema,
+  UserMessageSchema,
+} from "./validation/validationSchema.ts";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-app.use(headerValidator);
+app.use("/chats", headerValidator);
 app.use(errorHandler);
 
-console.log(process.env.OPENROUTER_API_KEY);
+app.post("/sessions/init", function (req, res) {
+  const result = SessionInitSchema.safeParse(req.body);
+  if (!result.success) {
+    const zodErrorMessage = result.error.issues[0].message;
+    sendResponse(res, null, false, zodErrorMessage, 400);
+    return;
+  }
+
+  const serverKey = appConfig.serverKey;
+  if (!serverKey) {
+    sendResponse(res, null, false, "Server key required", 400);
+    return;
+  }
+  //
+  const token = result.data.sessionId;
+  const signedToken = signToken(serverKey, token);
+  const signature = `${token}.${signedToken}`;
+  sendResponse(res, signature, true, null, 200);
+});
 
 app.post("/chats", async function (request, res) {
   const req = request as RequestWithContext;

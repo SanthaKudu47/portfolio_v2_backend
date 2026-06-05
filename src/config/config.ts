@@ -5,6 +5,7 @@ export let appConfig: IAppConfig = {
   githubUser: null,
   openRouterKey: null,
   groqKey: null,
+  serverKey: null,
 };
 export function initialize() {
   console.log("Reading From .env");
@@ -12,8 +13,9 @@ export function initialize() {
   const githubUser = process.env.GITHUB_USER;
   const openRouterKey = process.env.OPENROUTER_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
-  if (!githubToken || !githubUser || !openRouterKey || !groqKey) {
+  const serverKey = process.env.SERVER_KEY;
+  if (!githubToken || !githubUser || !openRouterKey || !groqKey || !serverKey) {
     process.exit(1);
   }
-  appConfig = { githubToken, githubUser, openRouterKey,groqKey };
+  appConfig = { githubToken, githubUser, openRouterKey, groqKey, serverKey };
 }

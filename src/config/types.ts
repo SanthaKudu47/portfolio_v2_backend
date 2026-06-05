@@ -3,6 +3,7 @@ export interface IAppConfig {
   githubUser: string | null;
   openRouterKey: string | null;
   groqKey: string | null;
+  serverKey:string|null;
   [key: string]: string | null;
 }
 

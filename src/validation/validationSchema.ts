@@ -6,3 +6,7 @@ export const UserMessageSchema = z.object({
     .min(1, "Message cannot be empty")
     .max(2000, "Message is too long"),
 });
+
+export const SessionInitSchema = z.object({
+  sessionId: z.uuid(),
+});
