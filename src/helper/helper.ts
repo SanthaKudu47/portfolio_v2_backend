@@ -133,7 +133,7 @@ export function signToken(key: string, value: string) {
   return signedToken;
 }
 
-function verifyToken(token: string, key: string) {
+export function verifyToken(token: string, key: string) {
   const [sessionId, signature] = token.split(".");
 
   const expectedToken = signToken(key, sessionId);
