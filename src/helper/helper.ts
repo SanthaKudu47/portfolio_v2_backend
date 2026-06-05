@@ -1,3 +1,4 @@
+import type { Response } from "express";
 import type { GitHubRepo, IDir, ITree, SimplifiedRepo } from "../config/types";
 
 async function readWebStreamToText(
@@ -104,3 +105,21 @@ export function buildTree(trees: ITree[]) {
 
   return root;
 }
+
+export function sendResponse(
+  res: Response,
+  data: string | number | boolean | null,
+  ok: boolean,
+  error: string | null,
+  status: number,
+) {
+  res.header("Content-Type", "application/json");
+  res.status(status);
+  res.send({
+    ok: ok,
+    data: data,
+    error: error,
+  });
+}
+
+function validateInputs(data: string) {}

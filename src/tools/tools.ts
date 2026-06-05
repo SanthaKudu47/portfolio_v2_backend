@@ -44,8 +44,24 @@ const toolManager = new ToolManager();
 toolManager.assignTool("get_game_price", {
   args: ["gameName"],
   function: function (...rest: any[]) {
-    console.log(`price of  ${rest[0]} is 25.00 USD`);
-    return `price of  ${rest[0]} is 25.00 USD`;
+    try {
+      return JSON.stringify({
+        ok: true,
+        data: `price of  ${rest[0]} is 25.00 USD`,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        return JSON.stringify({
+          ok: false,
+          error: err.message,
+        });
+      }
+
+      return JSON.stringify({
+        ok: false,
+        error: "Unknown error occurred",
+      });
+    }
   },
 });
 
