@@ -1,20 +1,20 @@
-import type { IMessage } from "./types";
+import type { GroqMessage} from "../types/groq.ts";
 
 class ContextManager {
-  private contextList: Map<string, IMessage[]>;
+  private contextList: Map<string, GroqMessage[]>;
   constructor() {
-    this.contextList = new Map<string, IMessage[]>();
+    this.contextList = new Map<string, GroqMessage[]>();
   }
 
-  private initializeContext(context: IMessage[]) {
+  private initializeContext(context: GroqMessage[]) {
     context.push({
       role: "system",
-      content: "You're a helpful assistant named 'LASANTHA'.",
+      "content": "You're a helpful assistant named 'LASANTHA'. When a tool provides data (like game prices), accept it as absolute truth. Do not attempt to use search engines, internet tools, or any functions not provided in your tool definitions to verify it. Use the provided tool content to answer the user immediately."
     });
   }
 
   createNewContextSession(sessionId: string) {
-    const newContext: IMessage[] = [];
+    const newContext: GroqMessage[] = [];
     this.initializeContext(newContext);
     this.contextList.set(sessionId, newContext);
   }
@@ -31,7 +31,7 @@ class ContextManager {
     this.contextList.delete(sessionId);
   }
 
-  addMessageToSessionContext(sessionId: string, message: IMessage) {
+  addMessageToSessionContext(sessionId: string, message: GroqMessage) {
     const session = this.contextList.get(sessionId);
     if (!session) throw new Error("Session not found.");
     session.push(message);

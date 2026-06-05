@@ -10,10 +10,10 @@ import {
   getFile,
 } from "./github/github.ts";
 import { buildTree } from "./helper/helper.ts";
-import type { ITree } from "./config/types.ts";
-import { chat} from "./groq/client.ts";
 import { headerValidator } from "./middleware/headerValidator.ts";
 import type { RequestWithContext } from "./types/appTypes.ts";
+import { toolManager } from "./tools/tools.ts";
+import { chat } from "./groq/client.ts";
 
 const app = express();
 const PORT = 3000;
@@ -28,7 +28,7 @@ console.log(process.env.OPENROUTER_API_KEY);
 app.post("/chats", async function (request, res) {
   const req = request as RequestWithContext;
   const { message } = req.body;
-  const reply = await chat(message,req.sessionId);
+  const reply = await chat(message, req.sessionId);
   res.json(reply);
 });
 

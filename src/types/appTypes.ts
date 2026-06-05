@@ -10,3 +10,4 @@ export interface ApiResponse {
 export type RequestWithContext = Request & {
   sessionId: string;
 };
+
