@@ -69,6 +69,22 @@ export async function chat(message: string, userSessionId: string) {
               },
             },
           },
+          //new
+          {
+            type: "function",
+            function: {
+              name: "calculate_sum",
+              description: "Adds two numbers together.",
+              parameters: {
+                type: "object",
+                properties: {
+                  a: { type: "number", description: "First number" },
+                  b: { type: "number", description: "Second number" },
+                },
+                required: ["a", "b"],
+              },
+            },
+          },
         ],
       });
 

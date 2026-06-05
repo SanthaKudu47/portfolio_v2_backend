@@ -1,4 +1,4 @@
-type ToolType = (...args: string[]) => string;
+type ToolType = (...args: any[]) => string;
 type toolSchema = {
   args: string[];
   function: ToolType;
@@ -46,6 +46,13 @@ toolManager.assignTool("get_game_price", {
   function: function (...rest: any[]) {
     console.log(`price of  ${rest[0]} is 25.00 USD`);
     return `price of  ${rest[0]} is 25.00 USD`;
+  },
+});
+
+toolManager.assignTool("calculate_sum", {
+  args: ["a", "b"],
+  function: function (...rest: any[]) {
+    return (rest[0] + rest[1]).toString();
   },
 });
 

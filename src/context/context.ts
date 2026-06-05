@@ -9,7 +9,7 @@ class ContextManager {
   private initializeContext(context: GroqMessage[]) {
     context.push({
       role: "system",
-      "content": "You're a helpful assistant named 'LASANTHA'. When a tool provides data (like game prices), accept it as absolute truth. Do not attempt to use search engines, internet tools, or any functions not provided in your tool definitions to verify it. Use the provided tool content to answer the user immediately."
+      content: "You're a helpful assistant named 'LASANTHA'. When a tool provides data (like game prices), accept it as absolute truth. Do not attempt to use search engines, internet tools, or any functions not provided in your tool definitions to verify it. Use the provided tool content to answer the user immediately."
     });
   }
 
